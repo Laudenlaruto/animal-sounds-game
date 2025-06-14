@@ -8,14 +8,14 @@ const translations = {
   fr: {
     title: 'Devine le Cri de l\'Animal!',
     playSound: '▶️ Jouer le Son',
-    correct: '🎉 ✅ Correct! 🎉',
-    tryAgain: '❌ Essaie Encore!'
+    correct: '🎉 Correct! 🎉',
+    tryAgain: '❌ Essaie encore!'
   },
   en: {
     title: 'Guess the Animal Sound!',
     playSound: '▶️ Play Sound',
-    correct: '🎉 ✅ Correct! 🎉',
-    tryAgain: '❌ Try Again!'
+    correct: '🎉 Correct! 🎉',
+    tryAgain: '❌ Try again!'
   }
 };
 
@@ -26,9 +26,17 @@ export default function App() {
   const [language, setLanguage] = useState<'fr' | 'en'>('fr');
   const [displayedAnimals, setDisplayedAnimals] = useState<typeof animals>([]);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+  const [currentSound, setCurrentSound] = useState<Howl | null>(null);
 
   function play() {
-    new Howl({ src: [answer.file] }).play();
+    // Stop any currently playing sound
+    if (currentSound) {
+      currentSound.stop();
+    }
+    
+    const sound = new Howl({ src: [answer.file] });
+    setCurrentSound(sound);
+    sound.play();
   }
 
   function getRandomAnimal() {
@@ -72,6 +80,12 @@ export default function App() {
 
   function handleGuess(animalId: string) {
     if (animalId === answer.id) {
+      // Stop any currently playing sound on success
+      if (currentSound) {
+        currentSound.stop();
+        setCurrentSound(null);
+      }
+      
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
@@ -81,7 +95,9 @@ export default function App() {
         setDisplayedAnimals(generateDisplayedAnimals(nextAnimal));
         // Auto-play the next sound after 3 seconds
         setTimeout(() => {
-          new Howl({ src: [nextAnimal.file] }).play();
+          const nextSound = new Howl({ src: [nextAnimal.file] });
+          setCurrentSound(nextSound);
+          nextSound.play();
         }, 1000);
       }, 2000);
     } else {
@@ -123,10 +139,22 @@ export default function App() {
               justifyContent: 'center',
               backgroundColor: 'rgba(34, 197, 94, 0.9)',
               borderRadius: '12px',
-              animation: 'bounce 0.5s ease-in-out'
+              animation: 'bounce 0.5s ease-in-out',
+              padding: '20px'
             }}
           >
-            <div style={{ fontSize: '4rem', color: 'white' }}>{translations[language].correct}</div>
+            <div style={{ 
+              fontSize: isDesktop ? '4rem' : 'clamp(1.5rem, 8vw, 3rem)', 
+              color: 'white', 
+              textAlign: 'center',
+              lineHeight: '1.2',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {translations[language].correct}
+            </div>
           </div>
         )}
 
@@ -143,11 +171,25 @@ export default function App() {
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
-              backgroundColor: 'rgba(239, 68, 68, 0.9)',
-              borderRadius: '12px'
+              backgroundColor: 'rgba(239, 68, 68, 0.95)',
+              borderRadius: '12px',
+              padding: isDesktop ? '20px' : '10px'
             }}
           >
-            <div style={{ fontSize: '3rem', color: 'white' }}>{translations[language].tryAgain}</div>
+            <div style={{ 
+              fontSize: isDesktop ? '3rem' : 'clamp(1.5rem, 10vw, 2.2rem)', 
+              color: 'white', 
+              textAlign: 'center',
+              lineHeight: '1.1',
+              fontWeight: '600',
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {translations[language].tryAgain}
+            </div>
           </div>
         )}
 
