@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Howl } from 'howler';
 import { animals } from './data/animals';
 
+
 const translations = {
   fr: {
     title: 'Devine le Cri de l\'Animal!',
@@ -94,8 +95,8 @@ export default function App() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-2 sm:p-4" style={{ minHeight: '100vh', minHeight: '100dvh', padding: 'clamp(4px, 1vw, 8px)' }}>
-      <div className="flex flex-col items-center justify-center w-full max-w-7xl relative" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: '1280px', gap: 'clamp(8px, 2vh, 16px)', minHeight: '100vh', minHeight: '100dvh' }}>
+    <div className="flex items-center justify-center min-h-screen p-2 sm:p-4" style={{ minHeight: '100dvh', padding: 'clamp(4px, 1vw, 8px)' }}>
+      <div className="flex flex-col items-center justify-center w-full max-w-7xl relative" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: '1280px', gap: 'clamp(8px, 2vh, 16px)', minHeight: '100dvh' }}>
         {/* Language Toggle Button */}
         <button
           onClick={toggleLanguage}
